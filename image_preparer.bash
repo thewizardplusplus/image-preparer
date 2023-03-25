@@ -58,7 +58,7 @@ while [[ "$1" != "--" ]]; do
 	case "$1" in
 		"-v" | "--version")
 			echo "Image Preparer, v1.0.0"
-			echo "Copyright (C) 2017 thewizardplusplus"
+			echo "Copyright (C) 2018, 2023 thewizardplusplus"
 
 			exit 0
 			;;
