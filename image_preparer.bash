@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-declare -r BLACK="$(tput setaf 0)"
+declare -r BLACK="$(tput setaf 237)"
 declare -r RED="$(tput setaf 1)"
 declare -r GREEN="$(tput setaf 2)"
 declare -r YELLOW="$(tput setaf 3)"
