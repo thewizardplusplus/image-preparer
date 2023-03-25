@@ -6,12 +6,6 @@ declare -r GREEN="$(tput setaf 2)"
 declare -r YELLOW="$(tput setaf 3)"
 declare -r RESET="$(tput sgr0)"
 
-declare base_path="."
-declare name_pattern="*.png"
-declare recursive=FALSE
-declare -i maximal_width=640
-declare optimize=TRUE
-
 function ansi() {
 	declare -r code="$1"
 	declare -r text="$2"
@@ -24,26 +18,24 @@ function log() {
 	declare -r message="$2"
 
 	declare level_color=""
-	if [[ $level == INFO ]]
-	then
+	if [[ $level == INFO ]]; then
 		level_color="$GREEN"
-	elif [[ $level == WARNING ]]
-	then
+	elif [[ $level == WARNING ]]; then
 		level_color="$YELLOW"
-	elif [[ $level == ERROR ]]
-	then
+	elif [[ $level == ERROR ]]; then
 		level_color="$RED"
 	fi
 
 	echo "$(ansi "$BLACK" "$(date --rfc-3339=ns)")" \
-		"$(ansi "$level_color" [$level])" \
+		"$(ansi "$level_color" "[$level]")" \
 		"$message" \
 		1>&2
 }
 
 declare -r script_name="$(basename "$0")"
-# it's necessary to separate the variable declaration and its definition so that
-# the declare command doesn't hide an exit code of the defining expression
+# it's necessary to separate the declaration and definition of the variable
+# so that the `declare` command doesn't hide an exit code
+# of the defining expression
 declare options
 options="$(
 	getopt \
@@ -52,18 +44,20 @@ options="$(
 		--longoptions "version,help,name:,recursive,width:,no-optimize" \
 		-- "$@"
 )"
-if [[ $? != 0 ]]
-then
+if [[ $? != 0 ]]; then
 	log ERROR "incorrect option"
 	exit 1
 fi
 
+declare name_pattern="*.png"
+declare recursive=FALSE
+declare -i maximal_width=640
+declare optimize=TRUE
 eval set -- "$options"
-while [[ "$1" != "--" ]]
-do
+while [[ "$1" != "--" ]]; do
 	case "$1" in
 		"-v" | "--version")
-			echo "Image Preparer, v1.0"
+			echo "Image Preparer, v1.0.0"
 			echo "Copyright (C) 2017 thewizardplusplus"
 
 			exit 0
@@ -77,15 +71,15 @@ do
 			echo "Options:"
 			echo "  -v, --version               - show the version;"
 			echo "  -h, --help                  - show the help;"
-			echo "  -n PATTERN, --name PATTERN  - pattern of images filenames" \
-				'(uses a name pattern of the find tool; default: "*.png");'
+			echo "  -n PATTERN, --name PATTERN  - a pattern of image filenames" \
+				'(uses a name pattern of the `find` tool; default: "*.png");'
 			echo "  -r, --recursive             - recursive search of images;"
-			echo "  -w WIDTH, --width WIDTH     - maximal width of images" \
+			echo "  -w WIDTH, --width WIDTH     - a maximum width of images" \
 				'(default: 640);'
-			echo "  --no-optimize               - not to optimize images."
+			echo "  --no-optimize               - don't optimize images."
 			echo
 			echo "Arguments:"
-			echo "  <path>                      - base path of images" \
+			echo "  <path>                      - base path to images" \
 				'(default: ".").'
 
 			exit 0
@@ -93,8 +87,7 @@ do
 		"-n" | "--name")
 			name_pattern="$2"
 
-			# additional shift for the option parameter
-			shift
+			shift # an additional shift for the option parameter
 			;;
 		"-r" | "--recursive")
 			recursive=TRUE
@@ -102,8 +95,7 @@ do
 		"-w" | "--width")
 			maximal_width="$2"
 
-			# additional shift for the option parameter
-			shift
+			shift # an additional shift for the option parameter
 			;;
 		"--no-optimize")
 			optimize=FALSE
@@ -113,20 +105,17 @@ do
 	shift
 done
 
-# additional shift for the "--" option
-shift
-if [[ $# == 1 ]]
-then
+declare base_path="."
+shift # an additional shift for the "--" option
+if [[ $# == 1 ]]; then
 	base_path="$1"
-elif [[ $# > 1 ]]
-then
+elif [[ $# > 1 ]]; then
 	log ERROR "too many positional arguments"
 	exit 1
 fi
 
 declare -a search_depth=()
-if [[ $recursive != TRUE ]]
-then
+if [[ $recursive != TRUE ]]; then
 	search_depth=("-maxdepth" "1")
 fi
 
@@ -138,15 +127,13 @@ find "$base_path" \
 	"${search_depth[@]}" \
 	-type f \
 	-name "$name_pattern" \
-| while read -r
-do
+| while read -r; do
 	image="$REPLY"
 
 	log INFO "resize the $(ansi "$YELLOW" "$image") image"
 	convert "$image" -filter lanczos -resize $maximal_width\> "$image"
 
-	if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]
-	then
+	if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
 		log INFO "optimize the $(ansi "$YELLOW" "$image") image (step 1)"
 		pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
 
