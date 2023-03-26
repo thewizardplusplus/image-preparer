@@ -1,5 +1,7 @@
 # Image Preparer
 
+![](docs/screenshot.png)
+
 The utility for image preparation.
 
 ## Features
