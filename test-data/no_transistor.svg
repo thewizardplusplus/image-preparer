@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns1="http://sozi.baierouge.fr" xmlns:xlink="http://www.w3.org/1999/xlink" id="svg2" version="0.48+devel r10523" viewBox="0 0 484 484" docname="no_transistor.svg" inkscape:version="0.91 r13725">
+  <sodipodi:namedview id="namedview17" fit-margin-left="0" inkscape:zoom="0.56067209" borderopacity="1" inkscape:current-layer="svg2" inkscape:cx="825.81495" inkscape:cy="129.87601" inkscape:window-maximized="1" showgrid="false" fit-margin-right="0" bordercolor="#666666" inkscape:window-x="0" guidetolerance="10" objecttolerance="10" inkscape:window-y="24" fit-margin-bottom="0" inkscape:window-width="1680" inkscape:pageopacity="0" inkscape:pageshadow="2" pagecolor="#ffffff" gridtolerance="10" inkscape:window-height="973" fit-margin-top="0"/>
+  <script/>
+  <script/>
+  <g id="g1089">
+    <path id="circle5" d="m300 79.978v7.764 50.125c-16.526-8.8239-35.419-13.893-55.438-13.893-62.522 0-113.76 48.788-117.69 110.33h-22.611-7.764v15.392h7.764 22.611c3.9968 61.487 55.21 110.33 117.69 110.33 20.016 0 38.913-5.0546 55.438-13.893v50.125 7.764h15.528v-7.764-60.069c28.545-21.581 46.993-55.795 46.993-94.257 0-38.465-18.444-72.715-46.993-94.257v-59.932-7.764h-15.528zm-55.438 59.388c16.568 0 32.2 3.948 46.039 10.897l-58.979 34.734v-7.9002h-30.784v57.208h-58.57c3.8888-53.157 48.128-94.939 102.29-94.939zm61.022 20.023c25.225 18.669 41.544 48.685 41.544 82.543 0 35.214-17.712 66.261-44.677 84.723l-22.202-32.418-5.0398 8.8537-43.587-22.883v-77.231l73.962-43.587zm-163.32 90.307h58.57v57.208h30.784v-9.1261l36.096 18.933-4.9036 8.8537 38.956 1.6345c-0.53394 0.35915-1.0935 0.60434-1.6345 0.95347h-0.13599v0.13599c-15.979 10.269-34.995 16.209-55.438 16.209-54.119 0-98.339-41.71-102.29-94.802z" style="font-size:xx-small;block-progression:tb;fill:#000000;color:#000000;text-indent:0;font-family:Sans;text-transform:none;line-height:normal" connector-curvature="0"/>
+    <path id="rect1082" d="m391.84 76.436 20.18 20.179-302.68 302.68-20.179-20.18z" style="color:#000000;stroke:#ffffff;stroke-width:3;fill:#fb0100" connector-curvature="0"/>
+    <path id="path118" d="m242.03 5.6077e-7c-133.65-0.009-242.02 108.32-242.03 241.97v0.59375c0.31301 133.43 108.57 241.43 242 241.44 133.65 0.01 241.99-108.35 242-242s-108.32-241.99-241.97-242zm-0.03 39.813c111.65 0.007 202.16 90.537 202.16 202.19-0.01 111.65-90.51 202.16-202.16 202.16-111.46-0.01-201.9-90.23-202.16-201.69v-0.5c0.011-111.66 90.51-202.16 202.16-202.16z" style="color:#000000;fill:#fb0100" connector-curvature="0"/>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>No transistor sign</dc:title>
+        <dc:date>2011-08-02T09:26:39</dc:date>
+        <dc:description>Joke sign for apologist of warm tube sound. </dc:description>
+        <dc:source>https://openclipart.org/detail/153235/no-transistor-sign-by-boobaloo</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>boobaloo</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>electronics</rdf:li>
+            <rdf:li>restriction</rdf:li>
+            <rdf:li>sign</rdf:li>
+            <rdf:li>transistor</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
