@@ -42,10 +42,11 @@ function log() {
 }
 
 function log_size_change() {
-	declare -r -i original_size="$1"
-	declare -r -i current_size="$2"
+	declare -r prefix="$1"
+	declare -r -i original_size="$2"
+	declare -r -i current_size="$3"
 
-	log INFO "the file size has changed" \
+	log INFO "[$prefix] the file size has changed" \
 		"from $(ansi "$MAGENTA" $original_size) B" \
 		"to $(ansi "$MAGENTA" $current_size) B"
 }
@@ -165,17 +166,17 @@ find "$base_path" \
 	if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
 		declare -i initial_size=$(size "$image")
 
-		log INFO "optimize the $(ansi "$YELLOW" "$image") image (step 1)"
+		log INFO "[step #1] optimize the $(ansi "$YELLOW" "$image") image"
 		pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
 
 		declare -i size_after_step_1=$(size "$image")
-		log_size_change $initial_size $size_after_step_1
+		log_size_change "step #1" $initial_size $size_after_step_1
 
-		log INFO "optimize the $(ansi "$YELLOW" "$image") image (step 2)"
+		log INFO "[step #2] optimize the $(ansi "$YELLOW" "$image") image"
 		optipng -quiet -strip=all -i0 -o1 "$image"
 
 		declare -i size_after_step_2=$(size "$image")
-		log_size_change $size_after_step_1 $size_after_step_2
-		log_size_change $initial_size $size_after_step_2
+		log_size_change "step #2" $size_after_step_1 $size_after_step_2
+		log_size_change "total" $initial_size $size_after_step_2
 	fi
 done
