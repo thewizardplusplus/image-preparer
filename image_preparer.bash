@@ -4,7 +4,14 @@ declare -r BLACK="$(tput setaf 237)"
 declare -r RED="$(tput setaf 1)"
 declare -r GREEN="$(tput setaf 2)"
 declare -r YELLOW="$(tput setaf 3)"
+declare -r MAGENTA="$(tput setaf 4)"
 declare -r RESET="$(tput sgr0)"
+
+function size() {
+	declare -r file="$1"
+
+	stat --format=%s "$file"
+}
 
 function ansi() {
 	declare -r code="$1"
@@ -15,7 +22,9 @@ function ansi() {
 
 function log() {
 	declare -r level="$1"
-	declare -r message="$2"
+
+	shift # a shift for the first parameter
+	declare -r message="$*"
 
 	declare level_color=""
 	if [[ $level == INFO ]]; then
@@ -30,6 +39,15 @@ function log() {
 		"$(ansi "$level_color" "[$level]")" \
 		"$message" \
 		1>&2
+}
+
+function log_size_change() {
+	declare -r -i original_size="$1"
+	declare -r -i current_size="$2"
+
+	log INFO "the file size has changed" \
+		"from $(ansi "$MAGENTA" $original_size) B" \
+		"to $(ansi "$MAGENTA" $current_size) B"
 }
 
 declare -r script_name="$(basename "$0")"
@@ -145,10 +163,19 @@ find "$base_path" \
 	fi
 
 	if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
+		declare -i initial_size=$(size "$image")
+
 		log INFO "optimize the $(ansi "$YELLOW" "$image") image (step 1)"
 		pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
 
+		declare -i size_after_step_1=$(size "$image")
+		log_size_change $initial_size $size_after_step_1
+
 		log INFO "optimize the $(ansi "$YELLOW" "$image") image (step 2)"
 		optipng -quiet -strip=all -i0 -o1 "$image"
+
+		declare -i size_after_step_2=$(size "$image")
+		log_size_change $size_after_step_1 $size_after_step_2
+		log_size_change $initial_size $size_after_step_2
 	fi
 done
