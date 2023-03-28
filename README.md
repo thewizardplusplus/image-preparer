@@ -9,7 +9,7 @@ The utility for image preparation.
 - search of images:
   - recursive search (optionally);
   - filtering by a pattern of image filenames (uses a name pattern of the `find` tool);
-- resizing of images larger than the specified size with the [Lanczos](https://en.wikipedia.org/wiki/Lanczos_resampling) filter;
+- resizing of images larger than the specified size with the [Lanczos](https://en.wikipedia.org/wiki/Lanczos_resampling) filter (optionally);
 - optimization of images (optionally):
   - via the [pngquant](https://pngquant.org/) tool;
   - via the [OptiPNG](http://optipng.sourceforge.net/) tool.
@@ -35,6 +35,7 @@ Options:
 - `-n PATTERN`, `--name PATTERN` &mdash; a pattern of image filenames (uses a name pattern of the `find` tool; default: `*.png`);
 - `-r`, `--recursive` &mdash; recursive search of images;
 - `-w WIDTH`, `--width WIDTH` &mdash; a maximum width of images (default: `640`);
+- `--no-resize` &mdash; don't resize images;
 - `--no-optimize` &mdash; don't optimize images.
 
 Arguments:

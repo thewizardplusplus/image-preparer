@@ -41,7 +41,7 @@ options="$(
 	getopt \
 		--name "$script_name" \
 		--options "vhn:rw:" \
-		--longoptions "version,help,name:,recursive,width:,no-optimize" \
+		--longoptions "version,help,name:,recursive,width:,no-resize,no-optimize" \
 		-- "$@"
 )"
 if [[ $? != 0 ]]; then
@@ -52,6 +52,7 @@ fi
 declare name_pattern="*.png"
 declare recursive=FALSE
 declare -i maximal_width=640
+declare resize=TRUE
 declare optimize=TRUE
 eval set -- "$options"
 while [[ "$1" != "--" ]]; do
@@ -76,6 +77,7 @@ while [[ "$1" != "--" ]]; do
 			echo "  -r, --recursive             - recursive search of images;"
 			echo "  -w WIDTH, --width WIDTH     - a maximum width of images" \
 				'(default: 640);'
+			echo "  --no-resize                 - don't resize images;"
 			echo "  --no-optimize               - don't optimize images."
 			echo
 			echo "Arguments:"
@@ -97,6 +99,9 @@ while [[ "$1" != "--" ]]; do
 
 			shift # an additional shift for the option parameter
 			;;
+		"--no-resize")
+			resize=FALSE
+			;;
 		"--no-optimize")
 			optimize=FALSE
 			;;
@@ -104,6 +109,10 @@ while [[ "$1" != "--" ]]; do
 
 	shift
 done
+if [[ $resize == FALSE && $optimize == FALSE ]]; then
+	log ERROR "both resizing and optimization are forbidden: nothing to do"
+	exit 1
+fi
 
 declare base_path="."
 shift # an additional shift for the "--" option
@@ -130,8 +139,10 @@ find "$base_path" \
 | while read -r; do
 	image="$REPLY"
 
-	log INFO "resize the $(ansi "$YELLOW" "$image") image"
-	convert "$image" -filter lanczos -resize $maximal_width\> "$image"
+	if [[ $resize == TRUE ]]; then
+		log INFO "resize the $(ansi "$YELLOW" "$image") image"
+		convert "$image" -filter lanczos -resize $maximal_width\> "$image"
+	fi
 
 	if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
 		log INFO "optimize the $(ansi "$YELLOW" "$image") image (step 1)"
