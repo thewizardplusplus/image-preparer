@@ -20,6 +20,12 @@ function size() {
 	stat --format=%s "$file"
 }
 
+function resolution() {
+	declare -r file="$1"
+
+	identify -format "%wx%h" "$file"
+}
+
 function ansi() {
 	declare -r code="$1"
 	declare -r text="$2"
@@ -180,9 +186,16 @@ find "$base_path" \
 
 		declare -i current_size=$initial_size
 		if [[ $resize == TRUE ]]; then
+			declare initial_resolution="$(resolution "$image")"
+
 			log INFO "${PREFIX_ON_RESIZING}resize" \
 				"the $(ansi "$YELLOW" "$image") image"
 			convert "$image" -filter lanczos -resize $maximal_width\> "$image"
+
+			declare resolution_after_resizing="$(resolution "$image")"
+			log INFO "${PREFIX_ON_RESIZING}the image resolution has changed" \
+				"from $(ansi "$MAGENTA" "$initial_resolution")" \
+				"to $(ansi "$MAGENTA" "$resolution_after_resizing")"
 
 			declare -i size_after_resizing=$(size "$image")
 			log_size_change "$PREFIX_ON_RESIZING" $current_size $size_after_resizing
