@@ -168,31 +168,53 @@ find "$base_path" \
 	while read -r; do
 		declare image="$REPLY"
 
+		declare -i initial_size=$(size "$image")
+		(( initial_total_size += initial_size ))
+
+		declare -i current_size=$initial_size
 		if [[ $resize == TRUE ]]; then
-			log INFO "resize the $(ansi "$YELLOW" "$image") image"
+			log INFO "[resizing] resize the $(ansi "$YELLOW" "$image") image"
 			convert "$image" -filter lanczos -resize $maximal_width\> "$image"
+
+			declare -i size_after_resizing=$(size "$image")
+			log_size_change "resizing" $current_size $size_after_resizing
+			current_size=$size_after_resizing
 		fi
 
 		if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
-			declare -i initial_size=$(size "$image")
-			(( initial_total_size += initial_size ))
+			declare -i size_before_optimization=$current_size
 
-			log INFO "[step #1] optimize the $(ansi "$YELLOW" "$image") image"
+			log INFO "[optimization/step #1] optimize" \
+				"the $(ansi "$YELLOW" "$image") image"
 			pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
 
-			declare -i size_after_step_1=$(size "$image")
-			log_size_change "step #1" $initial_size $size_after_step_1
+			declare -i size_after_optimization_step_1=$(size "$image")
+			log_size_change \
+				"optimization/step #1" \
+				$current_size \
+				$size_after_optimization_step_1
+			current_size=$size_after_optimization_step_1
 
-			log INFO "[step #2] optimize the $(ansi "$YELLOW" "$image") image"
+			log INFO "[optimization/step #2] optimize" \
+				"the $(ansi "$YELLOW" "$image") image"
 			optipng -quiet -strip=all -i0 -o1 "$image"
 
-			declare -i size_after_step_2=$(size "$image")
-			(( final_total_size += size_after_step_2 ))
-			log_size_change "step #2" $size_after_step_1 $size_after_step_2
-			log_size_change "total" $initial_size $size_after_step_2
+			declare -i size_after_optimization_step_2=$(size "$image")
+			log_size_change \
+				"optimization/step #2" \
+				$current_size \
+				$size_after_optimization_step_2
+			current_size=$size_after_optimization_step_2
+
+			log_size_change \
+				"optimization/total" \
+				$size_before_optimization \
+				$current_size
 		fi
+
+		(( final_total_size += current_size ))
+		log_size_change "total" $initial_size $current_size
 	done
-	if [[ $optimize == TRUE ]]; then
-		log_size_change "all images" $initial_total_size $final_total_size
-	fi
+
+	log_size_change "all images" $initial_total_size $final_total_size
 }
