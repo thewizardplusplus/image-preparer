@@ -155,7 +155,6 @@ if [[ $recursive != TRUE ]]; then
 	search_depth=("-maxdepth" "1")
 fi
 
-declare image=""
 set -o errtrace
 trap 'log WARNING "unable to process the $(ansi "$YELLOW" "$image") image"' ERR
 
@@ -163,28 +162,37 @@ find "$base_path" \
 	"${search_depth[@]}" \
 	-type f \
 	-name "$name_pattern" \
-| while read -r; do
-	image="$REPLY"
+| {
+	declare -i initial_total_size=0
+	declare -i final_total_size=0
+	while read -r; do
+		declare image="$REPLY"
 
-	if [[ $resize == TRUE ]]; then
-		log INFO "resize the $(ansi "$YELLOW" "$image") image"
-		convert "$image" -filter lanczos -resize $maximal_width\> "$image"
+		if [[ $resize == TRUE ]]; then
+			log INFO "resize the $(ansi "$YELLOW" "$image") image"
+			convert "$image" -filter lanczos -resize $maximal_width\> "$image"
+		fi
+
+		if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
+			declare -i initial_size=$(size "$image")
+			(( initial_total_size += initial_size ))
+
+			log INFO "[step #1] optimize the $(ansi "$YELLOW" "$image") image"
+			pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
+
+			declare -i size_after_step_1=$(size "$image")
+			log_size_change "step #1" $initial_size $size_after_step_1
+
+			log INFO "[step #2] optimize the $(ansi "$YELLOW" "$image") image"
+			optipng -quiet -strip=all -i0 -o1 "$image"
+
+			declare -i size_after_step_2=$(size "$image")
+			(( final_total_size += size_after_step_2 ))
+			log_size_change "step #2" $size_after_step_1 $size_after_step_2
+			log_size_change "total" $initial_size $size_after_step_2
+		fi
+	done
+	if [[ $optimize == TRUE ]]; then
+		log_size_change "all images" $initial_total_size $final_total_size
 	fi
-
-	if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
-		declare -i initial_size=$(size "$image")
-
-		log INFO "[step #1] optimize the $(ansi "$YELLOW" "$image") image"
-		pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
-
-		declare -i size_after_step_1=$(size "$image")
-		log_size_change "step #1" $initial_size $size_after_step_1
-
-		log INFO "[step #2] optimize the $(ansi "$YELLOW" "$image") image"
-		optipng -quiet -strip=all -i0 -o1 "$image"
-
-		declare -i size_after_step_2=$(size "$image")
-		log_size_change "step #2" $size_after_step_1 $size_after_step_2
-		log_size_change "total" $initial_size $size_after_step_2
-	fi
-done
+}
