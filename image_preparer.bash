@@ -7,6 +7,13 @@ declare -r YELLOW="$(tput setaf 3)"
 declare -r MAGENTA="$(tput setaf 4)"
 declare -r RESET="$(tput sgr0)"
 
+declare -r PREFIX_ON_RESIZING="[resizing] "
+declare -r PREFIX_ON_OPTIMIZATION_STEP_1="[optimization/step #1] "
+declare -r PREFIX_ON_OPTIMIZATION_STEP_2="[optimization/step #2] "
+declare -r PREFIX_ON_OPTIMIZATION_TOTAL="[optimization/total] "
+declare -r PREFIX_ON_TOTAL="[total] "
+declare -r PREFIX_ON_GLOBAL_TOTAL="[global total] "
+
 function size() {
 	declare -r file="$1"
 
@@ -53,7 +60,7 @@ function log_size_change() {
 	declare -r formatted_saved_size="$(
 		LC_NUMERIC=en_US.UTF-8 printf "%.2f%%" "$saved_size")"
 
-	log INFO "[$prefix] the file size has changed" \
+	log INFO "${prefix}the file size has changed" \
 		"from $(ansi "$MAGENTA" $original_size) B" \
 		"to $(ansi "$MAGENTA" $current_size) B" \
 		"(saved $(ansi "$MAGENTA" "$formatted_saved_size"))"
@@ -173,48 +180,52 @@ find "$base_path" \
 
 		declare -i current_size=$initial_size
 		if [[ $resize == TRUE ]]; then
-			log INFO "[resizing] resize the $(ansi "$YELLOW" "$image") image"
+			log INFO "${PREFIX_ON_RESIZING}resize" \
+				"the $(ansi "$YELLOW" "$image") image"
 			convert "$image" -filter lanczos -resize $maximal_width\> "$image"
 
 			declare -i size_after_resizing=$(size "$image")
-			log_size_change "resizing" $current_size $size_after_resizing
+			log_size_change "$PREFIX_ON_RESIZING" $current_size $size_after_resizing
 			current_size=$size_after_resizing
 		fi
 
 		if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
 			declare -i size_before_optimization=$current_size
 
-			log INFO "[optimization/step #1] optimize" \
+			log INFO "${PREFIX_ON_OPTIMIZATION_STEP_1}optimize" \
 				"the $(ansi "$YELLOW" "$image") image"
 			pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
 
 			declare -i size_after_optimization_step_1=$(size "$image")
 			log_size_change \
-				"optimization/step #1" \
+				"$PREFIX_ON_OPTIMIZATION_STEP_1" \
 				$current_size \
 				$size_after_optimization_step_1
 			current_size=$size_after_optimization_step_1
 
-			log INFO "[optimization/step #2] optimize" \
+			log INFO "${PREFIX_ON_OPTIMIZATION_STEP_2}optimize" \
 				"the $(ansi "$YELLOW" "$image") image"
 			optipng -quiet -strip=all -i0 -o1 "$image"
 
 			declare -i size_after_optimization_step_2=$(size "$image")
 			log_size_change \
-				"optimization/step #2" \
+				"$PREFIX_ON_OPTIMIZATION_STEP_2" \
 				$current_size \
 				$size_after_optimization_step_2
 			current_size=$size_after_optimization_step_2
 
 			log_size_change \
-				"optimization/total" \
+				"$PREFIX_ON_OPTIMIZATION_TOTAL" \
 				$size_before_optimization \
 				$current_size
 		fi
 
 		(( final_total_size += current_size ))
-		log_size_change "total" $initial_size $current_size
+		log_size_change "$PREFIX_ON_TOTAL" $initial_size $current_size
 	done
 
-	log_size_change "all images" $initial_total_size $final_total_size
+	log_size_change \
+		"$PREFIX_ON_GLOBAL_TOTAL" \
+		$initial_total_size \
+		$final_total_size
 }
