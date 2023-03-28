@@ -187,19 +187,24 @@ find "$base_path" \
 		declare -i current_size=$initial_size
 		if [[ $resize == TRUE ]]; then
 			declare initial_resolution="$(resolution "$image")"
+			declare -i initial_width="${initial_resolution%x*}"
+			if (( initial_width > maximal_width )); then
+				log INFO "${PREFIX_ON_RESIZING}resize" \
+					"the $(ansi "$YELLOW" "$image") image"
+				convert "$image" -filter lanczos -resize $maximal_width\> "$image"
 
-			log INFO "${PREFIX_ON_RESIZING}resize" \
-				"the $(ansi "$YELLOW" "$image") image"
-			convert "$image" -filter lanczos -resize $maximal_width\> "$image"
+				declare resolution_after_resizing="$(resolution "$image")"
+				log INFO "${PREFIX_ON_RESIZING}the image resolution has changed" \
+					"from $(ansi "$MAGENTA" "$initial_resolution")" \
+					"to $(ansi "$MAGENTA" "$resolution_after_resizing")"
 
-			declare resolution_after_resizing="$(resolution "$image")"
-			log INFO "${PREFIX_ON_RESIZING}the image resolution has changed" \
-				"from $(ansi "$MAGENTA" "$initial_resolution")" \
-				"to $(ansi "$MAGENTA" "$resolution_after_resizing")"
-
-			declare -i size_after_resizing=$(size "$image")
-			log_size_change "$PREFIX_ON_RESIZING" $current_size $size_after_resizing
-			current_size=$size_after_resizing
+				declare -i size_after_resizing=$(size "$image")
+				log_size_change "$PREFIX_ON_RESIZING" $current_size $size_after_resizing
+				current_size=$size_after_resizing
+			else
+				log INFO "${PREFIX_ON_RESIZING}the $(ansi "$YELLOW" "$image") image" \
+					"has an allowed resolution $(ansi "$MAGENTA" "$initial_resolution")"
+			fi
 		fi
 
 		if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
