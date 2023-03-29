@@ -12,7 +12,18 @@ The utility for image preparation.
 - resizing of images larger than the specified size with the [Lanczos](https://en.wikipedia.org/wiki/Lanczos_resampling) filter (optionally);
 - optimization of images (optionally):
   - via the [pngquant](https://pngquant.org/) tool;
-  - via the [OptiPNG](http://optipng.sourceforge.net/) tool.
+  - via the [OptiPNG](http://optipng.sourceforge.net/) tool;
+- logging of image changes:
+  - logging of a change of an image resolution on resizing;
+  - logging of a change of an image size:
+    - on the following operations:
+      - resizing;
+      - optimization;
+    - logging of a total change of image sizes:
+      - total change after all the optimization steps;
+      - total change after both resizing and optimization operations;
+      - total change for all images together;
+    - logging of a saved image size in percent.
 
 ## Requirements
 
