@@ -16,6 +16,19 @@ declare -r PREFIX_ON_OPTIMIZATION_TOTAL="[optimization/total] "
 declare -r PREFIX_ON_TOTAL="[total] "
 declare -r PREFIX_ON_GLOBAL_TOTAL="[global total] "
 
+function extension() {
+	declare -r file="$1"
+
+	# check that the file has an extension
+	if [[ "$file" != *.* ]]; then
+		return
+	fi
+
+	declare -r file_in_lowercase="${file,,}"
+	declare -r extension_without_period="${file_in_lowercase##*.}"
+	echo ".$extension_without_period"
+}
+
 function size() {
 	declare -r file="$1"
 
@@ -210,7 +223,7 @@ find "$base_path" \
 		fi
 
 		if [[ $optimize == TRUE ]]; then
-			case "${image: -4}" in
+			case "$(extension "$image")" in
 				".png")
 					declare -i size_before_optimization=$current_size
 
@@ -254,7 +267,7 @@ find "$base_path" \
 
 					;;
 
-				".jpg")
+				".jpg" | ".jpeg")
 					log INFO "${PREFIX_ON_OPTIMIZATION_WITHOUT_STEPS}optimize" \
 						"the $(ansi "$YELLOW" "$image") image"
 					# the maximum quality factor is based on the following article:
