@@ -11,6 +11,7 @@ declare -r PREFIX_ON_RESIZING="[resizing] "
 declare -r PREFIX_ON_OPTIMIZATION_STEP_1="[optimization/step #1] "
 declare -r PREFIX_ON_OPTIMIZATION_STEP_2="[optimization/step #2] "
 declare -r PREFIX_ON_OPTIMIZATION_STEP_3="[optimization/step #3] "
+declare -r PREFIX_ON_OPTIMIZATION_WITHOUT_STEPS="[optimization] "
 declare -r PREFIX_ON_OPTIMIZATION_TOTAL="[optimization/total] "
 declare -r PREFIX_ON_TOTAL="[total] "
 declare -r PREFIX_ON_GLOBAL_TOTAL="[global total] "
@@ -208,46 +209,68 @@ find "$base_path" \
 			fi
 		fi
 
-		if [[ $optimize == TRUE && "${image: -4}" == ".png" ]]; then
-			declare -i size_before_optimization=$current_size
+		if [[ $optimize == TRUE ]]; then
+			case "${image: -4}" in
+				".png")
+					declare -i size_before_optimization=$current_size
 
-			log INFO "${PREFIX_ON_OPTIMIZATION_STEP_1}optimize" \
-				"the $(ansi "$YELLOW" "$image") image"
-			pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
+					log INFO "${PREFIX_ON_OPTIMIZATION_STEP_1}optimize" \
+						"the $(ansi "$YELLOW" "$image") image"
+					pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
 
-			declare -i size_after_optimization_step_1=$(size "$image")
-			log_size_change \
-				"$PREFIX_ON_OPTIMIZATION_STEP_1" \
-				$current_size \
-				$size_after_optimization_step_1
-			current_size=$size_after_optimization_step_1
+					declare -i size_after_optimization_step_1=$(size "$image")
+					log_size_change \
+						"$PREFIX_ON_OPTIMIZATION_STEP_1" \
+						$current_size \
+						$size_after_optimization_step_1
+					current_size=$size_after_optimization_step_1
 
-			log INFO "${PREFIX_ON_OPTIMIZATION_STEP_2}optimize" \
-				"the $(ansi "$YELLOW" "$image") image"
-			optipng -quiet -strip=all -i0 -o1 "$image"
+					log INFO "${PREFIX_ON_OPTIMIZATION_STEP_2}optimize" \
+						"the $(ansi "$YELLOW" "$image") image"
+					optipng -quiet -strip=all -i0 -o1 "$image"
 
-			declare -i size_after_optimization_step_2=$(size "$image")
-			log_size_change \
-				"$PREFIX_ON_OPTIMIZATION_STEP_2" \
-				$current_size \
-				$size_after_optimization_step_2
-			current_size=$size_after_optimization_step_2
+					declare -i size_after_optimization_step_2=$(size "$image")
+					log_size_change \
+						"$PREFIX_ON_OPTIMIZATION_STEP_2" \
+						$current_size \
+						$size_after_optimization_step_2
+					current_size=$size_after_optimization_step_2
 
-			log INFO "${PREFIX_ON_OPTIMIZATION_STEP_3}optimize" \
-				"the $(ansi "$YELLOW" "$image") image"
-			advpng --recompress --quiet --shrink-insane "$image"
+					log INFO "${PREFIX_ON_OPTIMIZATION_STEP_3}optimize" \
+						"the $(ansi "$YELLOW" "$image") image"
+					advpng --recompress --quiet --shrink-insane "$image"
 
-			declare -i size_after_optimization_step_3=$(size "$image")
-			log_size_change \
-				"$PREFIX_ON_OPTIMIZATION_STEP_3" \
-				$current_size \
-				$size_after_optimization_step_3
-			current_size=$size_after_optimization_step_3
+					declare -i size_after_optimization_step_3=$(size "$image")
+					log_size_change \
+						"$PREFIX_ON_OPTIMIZATION_STEP_3" \
+						$current_size \
+						$size_after_optimization_step_3
+					current_size=$size_after_optimization_step_3
 
-			log_size_change \
-				"$PREFIX_ON_OPTIMIZATION_TOTAL" \
-				$size_before_optimization \
-				$current_size
+					log_size_change \
+						"$PREFIX_ON_OPTIMIZATION_TOTAL" \
+						$size_before_optimization \
+						$current_size
+
+					;;
+
+				".jpg")
+					log INFO "${PREFIX_ON_OPTIMIZATION_WITHOUT_STEPS}optimize" \
+						"the $(ansi "$YELLOW" "$image") image"
+					# the maximum quality factor is based on the following article:
+					# https://sirv.com/help/articles/jpeg-quality-comparison/
+					jpegoptim --quiet --strip-all --all-normal --max=80 "$image"
+
+					declare -i size_after_optimization=$(size "$image")
+					log_size_change \
+						"$PREFIX_ON_OPTIMIZATION_WITHOUT_STEPS" \
+						$current_size \
+						$size_after_optimization
+					current_size=$size_after_optimization
+
+					;;
+
+			esac
 		fi
 
 		(( final_total_size += current_size ))
