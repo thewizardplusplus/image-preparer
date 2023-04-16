@@ -10,6 +10,7 @@ declare -r RESET="$(tput sgr0)"
 declare -r PREFIX_ON_RESIZING="[resizing] "
 declare -r PREFIX_ON_OPTIMIZATION_STEP_1="[optimization/step #1] "
 declare -r PREFIX_ON_OPTIMIZATION_STEP_2="[optimization/step #2] "
+declare -r PREFIX_ON_OPTIMIZATION_STEP_3="[optimization/step #3] "
 declare -r PREFIX_ON_OPTIMIZATION_TOTAL="[optimization/total] "
 declare -r PREFIX_ON_TOTAL="[total] "
 declare -r PREFIX_ON_GLOBAL_TOTAL="[global total] "
@@ -231,6 +232,17 @@ find "$base_path" \
 				$current_size \
 				$size_after_optimization_step_2
 			current_size=$size_after_optimization_step_2
+
+			log INFO "${PREFIX_ON_OPTIMIZATION_STEP_3}optimize" \
+				"the $(ansi "$YELLOW" "$image") image"
+			advpng --recompress --quiet --shrink-insane "$image"
+
+			declare -i size_after_optimization_step_3=$(size "$image")
+			log_size_change \
+				"$PREFIX_ON_OPTIMIZATION_STEP_3" \
+				$current_size \
+				$size_after_optimization_step_3
+			current_size=$size_after_optimization_step_3
 
 			log_size_change \
 				"$PREFIX_ON_OPTIMIZATION_TOTAL" \

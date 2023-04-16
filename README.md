@@ -13,6 +13,7 @@ The utility for image preparation.
 - optimization of images (optionally):
   - via the [pngquant](https://pngquant.org/) tool;
   - via the [OptiPNG](http://optipng.sourceforge.net/) tool;
+  - via the `advpng` tool from the [AdvanceCOMP](http://www.advancemame.it/) project;
 - logging of image changes:
   - logging of a change of an image resolution on resizing;
   - logging of a change of an image size:
@@ -29,7 +30,8 @@ The utility for image preparation.
 
 - [ImageMagick](http://www.imagemagick.org/) >=6.7.7-10, <7.0;
 - [pngquant](https://pngquant.org/) >=2.9.1, <3.0;
-- [OptiPNG](http://optipng.sourceforge.net/) >=0.7.6, <1.0.
+- [OptiPNG](http://optipng.sourceforge.net/) >=0.7.6, <1.0;
+- [AdvanceCOMP](http://www.advancemame.it/) >=2.1.0, <3.0.
 
 ## Usage
 
