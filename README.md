@@ -8,7 +8,7 @@ The utility for image preparation.
 
 - search of images:
   - recursive search (optionally);
-  - filtering by a pattern of image filenames (uses a name pattern of the `find` tool);
+  - filtering by a pattern of image filenames (uses Perl-compatible regular expressions (PCREs));
 - resizing of images larger than the specified size with the [Lanczos](https://en.wikipedia.org/wiki/Lanczos_resampling) filter (optionally);
 - optimization of images (optionally):
   - in PNG format:
@@ -49,7 +49,7 @@ Options:
 
 - `-v`, `--version` &mdash; show the version;
 - `-h`, `--help` &mdash; show the help;
-- `-n PATTERN`, `--name PATTERN` &mdash; a pattern of image filenames (uses a name pattern of the `find` tool; default: `*.png`);
+- `-n PATTERN`, `--name PATTERN` &mdash; a pattern of image filenames (uses Perl-compatible regular expressions (PCREs); default: `(?i)\.(png|jpe?g)`);
 - `-r`, `--recursive` &mdash; recursive search of images;
 - `-w WIDTH`, `--width WIDTH` &mdash; a maximum width of images (default: `640`);
 - `--no-resize` &mdash; don't resize images;

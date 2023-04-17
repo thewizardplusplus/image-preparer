@@ -104,7 +104,7 @@ if [[ $? != 0 ]]; then
 	exit 1
 fi
 
-declare name_pattern="*.png"
+declare name_pattern="(?i)\.(png|jpe?g)"
 declare recursive=FALSE
 declare -i maximal_width=640
 declare resize=TRUE
@@ -128,10 +128,11 @@ while [[ "$1" != "--" ]]; do
 			echo "  -v, --version               - show the version;"
 			echo "  -h, --help                  - show the help;"
 			echo "  -n PATTERN, --name PATTERN  - a pattern of image filenames" \
-				'(uses a name pattern of the `find` tool; default: "*.png");'
+				"(uses Perl-compatible regular expressions (PCREs);" \
+				'default: "(?i)\.(png|jpe?g)");'
 			echo "  -r, --recursive             - recursive search of images;"
 			echo "  -w WIDTH, --width WIDTH     - a maximum width of images" \
-				'(default: 640);'
+				"(default: 640);"
 			echo "  --no-resize                 - don't resize images;"
 			echo "  --no-optimize               - don't optimize images."
 			echo
@@ -189,7 +190,7 @@ trap 'log WARNING "unable to process the $(ansi "$YELLOW" "$image") image"' ERR
 find "$base_path" \
 	"${search_depth[@]}" \
 	-type f \
-	-name "$name_pattern" \
+| grep --perl-regexp "$name_pattern" \
 | {
 	declare -i initial_total_size=0
 	declare -i final_total_size=0
