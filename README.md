@@ -1,6 +1,6 @@
 # Image Preparer
 
-![](docs/screenshot.png)
+![](docs/screenshot_1.png)
 
 The utility for image preparation.
 
