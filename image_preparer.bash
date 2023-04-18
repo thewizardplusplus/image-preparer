@@ -89,8 +89,7 @@ function log_size_change() {
 
 declare -r script_name="$(basename "$0")"
 # it's necessary to separate the declaration and definition of the variable
-# so that the `declare` command doesn't hide an exit code
-# of the defining expression
+# so that the `declare` command doesn't hide an exit code of the defining expression
 declare options
 options="$(
 	getopt \
@@ -144,7 +143,6 @@ while [[ "$1" != "--" ]]; do
 			;;
 		"-n" | "--name")
 			name_pattern="$2"
-
 			shift # an additional shift for the option parameter
 			;;
 		"-r" | "--recursive")
@@ -152,7 +150,6 @@ while [[ "$1" != "--" ]]; do
 			;;
 		"-w" | "--width")
 			maximal_width="$2"
-
 			shift # an additional shift for the option parameter
 			;;
 		"--no-resize")
@@ -179,17 +176,15 @@ elif [[ $# > 1 ]]; then
 	exit 1
 fi
 
+set -o errtrace
+trap 'log WARNING "unable to process the $(ansi "$YELLOW" "$image") image"' ERR
+
 declare -a search_depth=()
 if [[ $recursive != TRUE ]]; then
 	search_depth=("-maxdepth" "1")
 fi
 
-set -o errtrace
-trap 'log WARNING "unable to process the $(ansi "$YELLOW" "$image") image"' ERR
-
-find "$base_path" \
-	"${search_depth[@]}" \
-	-type f \
+find "$base_path" "${search_depth[@]}" -type f \
 | grep --perl-regexp "$name_pattern" \
 | {
 	declare -i initial_total_size=0
@@ -207,7 +202,7 @@ find "$base_path" \
 			if (( initial_width > maximal_width )); then
 				log INFO "${PREFIX_ON_RESIZING}resize" \
 					"the $(ansi "$YELLOW" "$image") image"
-				convert "$image" -filter lanczos -resize $maximal_width\> "$image"
+				convert "$image" -filter Lanczos -resize $maximal_width\> "$image"
 
 				declare resolution_after_resizing="$(resolution "$image")"
 				log INFO "${PREFIX_ON_RESIZING}the image resolution has changed" \
@@ -230,7 +225,7 @@ find "$base_path" \
 
 					log INFO "${PREFIX_ON_OPTIMIZATION_STEP_1}optimize" \
 						"the $(ansi "$YELLOW" "$image") image"
-					pngquant --ext=.png --force --skip-if-larger --speed=1 --strip "$image"
+					pngquant --ext=.png --force --skip-if-larger --strip --speed=1 "$image"
 
 					declare -i size_after_optimization_step_1=$(size "$image")
 					log_size_change \
@@ -291,8 +286,5 @@ find "$base_path" \
 		log_size_change "$PREFIX_ON_TOTAL" $initial_size $current_size
 	done
 
-	log_size_change \
-		"$PREFIX_ON_GLOBAL_TOTAL" \
-		$initial_total_size \
-		$final_total_size
+	log_size_change "$PREFIX_ON_GLOBAL_TOTAL" $initial_total_size $final_total_size
 }
