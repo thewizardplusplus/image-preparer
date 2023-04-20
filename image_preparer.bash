@@ -74,17 +74,22 @@ function log_size_change() {
 	declare -r -i original_size="$2"
 	declare -r -i current_size="$3"
 
-	declare -r current_size_in_percent="$(
-		bc <<< "scale = 6; $current_size / $original_size * 100")"
-	declare -r saved_size="$(
-		bc <<< "100 - $current_size_in_percent")"
-	declare -r formatted_saved_size="$(
-		LC_NUMERIC=en_US.UTF-8 printf "%.2f%%" "$saved_size")"
+	declare suffix_with_saved_size=""
+	if [[ $original_size != 0 ]]; then
+		declare -r current_size_in_percent="$(
+			bc <<< "scale = 6; $current_size / $original_size * 100")"
+		declare -r saved_size="$(
+			bc <<< "100 - $current_size_in_percent")"
+		declare -r formatted_saved_size="$(
+			LC_NUMERIC=en_US.UTF-8 printf "%.2f%%" "$saved_size")"
+
+		suffix_with_saved_size="(saved $(ansi "$MAGENTA" "$formatted_saved_size"))"
+	fi
 
 	log INFO "${prefix}the file size has changed" \
 		"from $(ansi "$MAGENTA" $original_size) B" \
 		"to $(ansi "$MAGENTA" $current_size) B" \
-		"(saved $(ansi "$MAGENTA" "$formatted_saved_size"))"
+		"$suffix_with_saved_size"
 }
 
 declare -r script_name="$(basename "$0")"
