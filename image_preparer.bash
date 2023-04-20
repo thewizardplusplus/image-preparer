@@ -187,10 +187,15 @@ fi
 find "$base_path" "${search_depth[@]}" -type f \
 | grep --perl-regexp "$name_pattern" \
 | {
+	declare -i image_count=0
 	declare -i initial_total_size=0
 	declare -i final_total_size=0
 	while read -r; do
 		declare image="$REPLY"
+
+		(( image_count++ )) || true # ignore an error since a zero value counts as an error
+		log INFO "[image $(ansi "$MAGENTA" \#$image_count)] process" \
+			"the $(ansi "$YELLOW" "$image") image"
 
 		declare -i initial_size=$(size "$image")
 		(( initial_total_size += initial_size ))

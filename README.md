@@ -18,6 +18,7 @@ The utility for image preparation.
   - in JPEG format:
     - via the [jpegoptim](https://github.com/tjko/jpegoptim) tool;
 - logging of image changes:
+  - logging of an image number and name at the beginning of processing;
   - logging of a change of an image resolution on resizing;
   - logging of a change of an image size:
     - on the following operations:
