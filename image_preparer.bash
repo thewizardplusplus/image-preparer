@@ -301,5 +301,7 @@ find "$base_path" "${search_depth[@]}" -type f \
 		fi
 	done
 
-	log_size_change "$PREFIX_ON_GLOBAL_TOTAL" $initial_total_size $final_total_size
+	if [[ $image_count != 0 ]]; then
+		log_size_change "$PREFIX_ON_GLOBAL_TOTAL" $initial_total_size $final_total_size
+	fi
 }
