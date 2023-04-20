@@ -100,7 +100,7 @@ options="$(
 	getopt \
 		--name "$script_name" \
 		--options "vhn:rw:" \
-		--longoptions "version,help,name:,recursive,width:,no-resize,no-optimize" \
+		--longoptions "version,help,name:,recursive,width:,no-process,no-resize,no-optimize" \
 		-- "$@"
 )"
 if [[ $? != 0 ]]; then
@@ -111,6 +111,7 @@ fi
 declare name_pattern="(?i)\.(png|jpe?g)"
 declare recursive=FALSE
 declare -i maximal_width=640
+declare process=TRUE
 declare resize=TRUE
 declare optimize=TRUE
 eval set -- "$options"
@@ -137,6 +138,8 @@ while [[ "$1" != "--" ]]; do
 			echo "  -r, --recursive             - recursive search of images;"
 			echo "  -w WIDTH, --width WIDTH     - a maximum width of images" \
 				"(default: 640);"
+			echo "  --no-process                - don't process images," \
+				"only search for them and check their size;"
 			echo "  --no-resize                 - don't resize images;"
 			echo "  --no-optimize               - don't optimize images."
 			echo
@@ -156,6 +159,9 @@ while [[ "$1" != "--" ]]; do
 		"-w" | "--width")
 			maximal_width="$2"
 			shift # an additional shift for the option parameter
+			;;
+		"--no-process")
+			process=FALSE
 			;;
 		"--no-resize")
 			resize=FALSE
@@ -211,27 +217,32 @@ find "$base_path" "${search_depth[@]}" -type f \
 			declare initial_resolution="$(resolution "$image")"
 			declare -i initial_width="${initial_resolution%x*}"
 			if (( initial_width > maximal_width )); then
-				log INFO "${PREFIX_ON_RESIZING}resize" \
-					"the $(ansi "$YELLOW" "$image") image"
-				convert "$image" -filter Lanczos -resize $maximal_width\> "$image"
+				if [[ $process == TRUE ]]; then
+					log INFO "${PREFIX_ON_RESIZING}resize" \
+						"the $(ansi "$YELLOW" "$image") image"
+					convert "$image" -filter Lanczos -resize $maximal_width\> "$image"
 
-				declare resolution_after_resizing="$(resolution "$image")"
-				log INFO "${PREFIX_ON_RESIZING}the image resolution has changed" \
-					"from $(ansi "$MAGENTA" "$initial_resolution")" \
-					"to $(ansi "$MAGENTA" "$resolution_after_resizing")"
+					declare resolution_after_resizing="$(resolution "$image")"
+					log INFO "${PREFIX_ON_RESIZING}the image resolution has changed" \
+						"from $(ansi "$MAGENTA" "$initial_resolution")" \
+						"to $(ansi "$MAGENTA" "$resolution_after_resizing")"
 
-				declare -i size_after_resizing=$(size "$image")
-				log_size_change "$PREFIX_ON_RESIZING" $current_size $size_after_resizing
-				current_size=$size_after_resizing
+					declare -i size_after_resizing=$(size "$image")
+					log_size_change "$PREFIX_ON_RESIZING" $current_size $size_after_resizing
+					current_size=$size_after_resizing
 
-				was_resized=TRUE
+					was_resized=TRUE
+				else
+					log WARNING "${PREFIX_ON_RESIZING}the $(ansi "$YELLOW" "$image") image" \
+						"has a not allowed resolution $(ansi "$MAGENTA" "$initial_resolution")"
+				fi
 			else
 				log INFO "${PREFIX_ON_RESIZING}the $(ansi "$YELLOW" "$image") image" \
 					"has an allowed resolution $(ansi "$MAGENTA" "$initial_resolution")"
 			fi
 		fi
 
-		if [[ $optimize == TRUE ]]; then
+		if [[ $optimize == TRUE && $process == TRUE ]]; then
 			case "$(extension "$image")" in
 				".png")
 					declare -i size_before_optimization=$current_size
@@ -301,7 +312,7 @@ find "$base_path" "${search_depth[@]}" -type f \
 		fi
 	done
 
-	if [[ $image_count != 0 ]]; then
+	if [[ $image_count != 0 && $process == TRUE ]]; then
 		log_size_change "$PREFIX_ON_GLOBAL_TOTAL" $initial_total_size $final_total_size
 	fi
 }

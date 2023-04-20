@@ -17,6 +17,7 @@ The utility for image preparation.
     - via the `advpng` tool from the [AdvanceCOMP](http://www.advancemame.it/) project;
   - in JPEG format:
     - via the [jpegoptim](https://github.com/tjko/jpegoptim) tool;
+- the mode without processing of images, only with search of them and check of their size;
 - logging of image changes:
   - logging of an image number and name at the beginning of processing;
   - logging of a change of an image resolution on resizing;
@@ -53,6 +54,7 @@ Options:
 - `-n PATTERN`, `--name PATTERN` &mdash; a pattern of image filenames (uses Perl-compatible regular expressions (PCREs); default: `(?i)\.(png|jpe?g)`);
 - `-r`, `--recursive` &mdash; recursive search of images;
 - `-w WIDTH`, `--width WIDTH` &mdash; a maximum width of images (default: `640`);
+- `--no-process` &mdash; don't process images, only search for them and check their size;
 - `--no-resize` &mdash; don't resize images;
 - `--no-optimize` &mdash; don't optimize images.
 
