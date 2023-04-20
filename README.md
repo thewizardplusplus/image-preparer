@@ -39,6 +39,15 @@ The utility for image preparation.
 - [AdvanceCOMP](http://www.advancemame.it/) >=2.1.0, <3.0;
 - [jpegoptim](https://github.com/tjko/jpegoptim) >=1.4.6, <2.0.
 
+### Installation of the Requirements
+
+On Ubuntu:
+
+```
+$ sudo apt update \
+  && sudo apt install imagemagick-6.q16 pngquant optipng advancecomp jpegoptim
+```
+
 ## Usage
 
 ```
