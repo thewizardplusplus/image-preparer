@@ -1,5 +1,17 @@
 # Change Log
 
+## [v1.3.0](https://github.com/thewizardplusplus/image-preparer/tree/v1.3.0) (2023-04-20)
+
+Add the mode without processing of images and improve logging of image changes.
+
+- the mode without processing of images, only with search of them and check of their size;
+- logging of image changes:
+  - logging of an image number and name at the beginning of processing;
+  - fix the bug with zero original size on logging of a change of image sizes;
+  - remove redundant logging:
+    - of a total change of image sizes;
+    - of a global total change of image sizes.
+
 ## [v1.2.0](https://github.com/thewizardplusplus/image-preparer/tree/v1.2.0) (2023-04-18)
 
 Support optimization of images in JPEG format; add an optimization step via the `advpng` tool from the [AdvanceCOMP](http://www.advancemame.it/) project; improve search of images.
