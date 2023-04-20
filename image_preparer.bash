@@ -196,6 +196,7 @@ find "$base_path" "${search_depth[@]}" -type f \
 		(( initial_total_size += initial_size ))
 
 		declare -i current_size=$initial_size
+		declare was_resized=FALSE
 		if [[ $resize == TRUE ]]; then
 			declare initial_resolution="$(resolution "$image")"
 			declare -i initial_width="${initial_resolution%x*}"
@@ -212,6 +213,8 @@ find "$base_path" "${search_depth[@]}" -type f \
 				declare -i size_after_resizing=$(size "$image")
 				log_size_change "$PREFIX_ON_RESIZING" $current_size $size_after_resizing
 				current_size=$size_after_resizing
+
+				was_resized=TRUE
 			else
 				log INFO "${PREFIX_ON_RESIZING}the $(ansi "$YELLOW" "$image") image" \
 					"has an allowed resolution $(ansi "$MAGENTA" "$initial_resolution")"
@@ -283,7 +286,9 @@ find "$base_path" "${search_depth[@]}" -type f \
 		fi
 
 		(( final_total_size += current_size ))
-		log_size_change "$PREFIX_ON_TOTAL" $initial_size $current_size
+		if [[ $was_resized == TRUE && $optimize == TRUE ]]; then
+			log_size_change "$PREFIX_ON_TOTAL" $initial_size $current_size
+		fi
 	done
 
 	log_size_change "$PREFIX_ON_GLOBAL_TOTAL" $initial_total_size $final_total_size
