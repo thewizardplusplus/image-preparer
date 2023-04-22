@@ -260,7 +260,9 @@ find "$base_path" "${search_depth[@]}" -type f \
 
 					log INFO "${PREFIX_ON_OPTIMIZATION_STEP_2}optimize" \
 						"the $(ansi "$YELLOW" "$image") image"
-					optipng -quiet -strip=all -i0 -o1 "$image"
+					# the `-zc9 -zm8 -zs0-3 -f0-5` options corresponds to the `-o4` option,
+					# but the latter is unstable across tool versions, so I use the full list directly
+					optipng -quiet -clobber -fix -strip=all -i0 -zc9 -zm8 -zs0-3 -f0-5 "$image"
 
 					declare -i size_after_optimization_step_2=$(size "$image")
 					log_size_change \
