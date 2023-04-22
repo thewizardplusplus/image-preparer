@@ -220,7 +220,7 @@ find "$base_path" "${search_depth[@]}" -type f \
 				if [[ $process == TRUE ]]; then
 					log INFO "${PREFIX_ON_RESIZING}resize" \
 						"the $(ansi "$YELLOW" "$image") image"
-					convert "$image" -filter Lanczos -resize $maximal_width\> "$image"
+					convert "$image" -filter Lanczos -resize $maximal_width\> -interlace none "$image"
 
 					declare resolution_after_resizing="$(resolution "$image")"
 					log INFO "${PREFIX_ON_RESIZING}the image resolution has changed" \
