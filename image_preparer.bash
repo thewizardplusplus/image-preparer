@@ -271,7 +271,7 @@ find "$base_path" "${search_depth[@]}" -type f \
 
 					log INFO "${PREFIX_ON_OPTIMIZATION_STEP_3}optimize" \
 						"the $(ansi "$YELLOW" "$image") image"
-					advpng --recompress --quiet --shrink-insane "$image"
+					advpng --recompress --quiet --shrink-extra "$image"
 
 					declare -i size_after_optimization_step_3=$(size "$image")
 					log_size_change \
