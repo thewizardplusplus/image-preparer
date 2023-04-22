@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.3.1](https://github.com/thewizardplusplus/image-preparer/tree/v1.3.1) (2023-04-22)
+
+Tuning up the tools to be used.
+
+- resizing of images:
+  - tune up the `convert` tool from the [ImageMagick](http://www.imagemagick.org/) project;
+- optimization of images:
+  - in PNG format:
+    - tune up the [OptiPNG](http://optipng.sourceforge.net/) tool;
+    - tune up the `advpng` tool from the [AdvanceCOMP](http://www.advancemame.it/) project.
+
 ## [v1.3.0](https://github.com/thewizardplusplus/image-preparer/tree/v1.3.0) (2023-04-20)
 
 Add the mode without processing of images and improve logging of image changes.
