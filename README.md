@@ -2,7 +2,13 @@
 
 ![](docs/screenshot_1.png)
 
-The utility for image preparation.
+The utility for image preparation: resizing of images larger than the specified size and optimization of images in PNG and JPEG formats.
+
+This is a simple script that combines several well-known tools and sets a particular mode for their running. The script also collects some statistics about the results of processing.
+
+I use it to prepare images (screenshots and photos) for my blog.
+
+⚠️ Warning! To avoid damaging the images or significantly degrading their quality, the script should not be run repeatedly on files that have already been processed by it.
 
 ## Features
 
